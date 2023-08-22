@@ -61,3 +61,4 @@ if __name__ == '__main__':
             ip = input("Adicione um IP: ")
             send_post_request(ip)
         if action == 'get':
+            send_get_request()
