@@ -5,7 +5,7 @@ def send_post_request(ip):
     # Cria um socket para a comunicação com o servidor
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Conecta-se ao endereço IP e porta do servidor
-    client_socket.connect(('127.0.0.1', 8080))
+    client_socket.connect(('172.16.103.8', 8080))
 
     # Prepara o corpo da solicitação POST em formato JSON
     request_body = json.dumps({'ip': ip})
@@ -24,7 +24,7 @@ def send_get_request():
     # Cria um socket para a comunicação com o servidor
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Conecta-se ao endereço IP e porta do servidor
-    client_socket.connect(('127.0.0.1', 8080))
+    client_socket.connect(('172.16.103.8', 8080))
     # Cria a requisição GET com os cabeçalhos necessários
     request = "GET /get_ips HTTP/1.1\r\nHost: 127.0.0.1:8080\r\n\r\n"
     # Envia a requisição para o servidor
