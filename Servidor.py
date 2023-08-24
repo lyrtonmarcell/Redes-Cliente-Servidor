@@ -55,7 +55,7 @@ def start_server():
     # Cria um socket para o servidor
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Liga o socket ao endereço IP e porta
-    server_socket.bind(('127.0.0.1', 8080))
+    server_socket.bind(('172.16.103.8', 8080))
     # Inicia a escuta por conexões
     server_socket.listen(5)
     # Exibe uma mensagem de que o servidor está ouvindo
@@ -73,3 +73,4 @@ def start_server():
 # Inicia o servidor quando este arquivo é executado diretamente
 if __name__ == '__main__':
     start_server()
+
