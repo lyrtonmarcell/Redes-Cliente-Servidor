@@ -22,7 +22,7 @@ def handle_client(client_socket):
             # Monta a resposta com o cabeçalho apropriado
             response = "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}".format(len(response_data), response_data.decode('utf-8'))
     # Verifica se a requisição é do tipo POST /add_ip
-    elif "POST /add_ip" in request_text:
+    if "POST /add_ip" in request_text:
         # Encontra o tamanho do corpo da requisição
         content_length_start = request_text.find("Content-Length: ") + len("Content-Length: ")
         content_length_end = request_text.find("\r\n", content_length_start)
@@ -51,7 +51,7 @@ def handle_client(client_socket):
     client_socket.close()
 
     # Verifica se a requisição é do tipo PUT /update_ip
-    elif "PUT /update_ip" in request_text:
+    if "PUT /update_ip" in request_text:
         # Encontra o tamanho do corpo da requisição
         content_length_start = request_text.find("Content-Length: ") + len("Content-Length: ")
         content_length_end = request_text.find("\r\n", content_length_start)
@@ -77,7 +77,7 @@ def handle_client(client_socket):
             response = "HTTP/1.1 400 Bad Request\r\n\r\nMissing or invalid IP"
     
     # Verifica se a requisição é do tipo PATCH /patch_ip
-    elif "PATCH /patch_ip" in request_text:
+    if "PATCH /patch_ip" in request_text:
         # Encontra o tamanho do corpo da requisição
         content_length_start = request_text.find("Content-Length: ") + len("Content-Length: ")
         content_length_end = request_text.find("\r\n", content_length_start)
