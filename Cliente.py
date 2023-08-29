@@ -87,11 +87,20 @@ def send_get_request():
 
 if __name__ == '__main__':
     while True:
-        action = input("Escolha uma das opções (post/get/exit): ").lower()
+        action = input("Escolha uma das opções (post/put/patch/delete/get/exit): ").lower()
         if action == 'exit':
             break
         if action == 'post':
             ip = input("Adicione um IP: ")
             send_post_request(ip)
+        if action == 'put':
+            ip = input("Atualize um IP existente: ")
+            send_put_request(ip)
+        if action == 'patch':
+            ip = input("Aplique um patch em um IP existente: ")
+            send_patch_request(ip)
+        if action == 'delete':
+            ip = input("Exclua um IP existente: ")
+            send_delete_request(ip)
         if action == 'get':
             send_get_request()
