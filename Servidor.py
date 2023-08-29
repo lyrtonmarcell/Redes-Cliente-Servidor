@@ -50,6 +50,85 @@ def handle_client(client_socket):
     client_socket.send(response.encode('utf-8'))
     client_socket.close()
 
+    # Verifica se a requisição é do tipo PUT /update_ip
+    elif "PUT /update_ip" in request_text:
+        # Encontra o tamanho do corpo da requisição
+        content_length_start = request_text.find("Content-Length: ") + len("Content-Length: ")
+        content_length_end = request_text.find("\r\n", content_length_start)
+        content_length = int(request_text[content_length_start:content_length_end])
+    
+        # Extrai o corpo da requisição
+        request_body = request_text.split("\r\n\r\n")[1]
+        # Converte o corpo da requisição JSON em um dicionário
+        request_json = json.loads(request_body)
+    
+        # Obtém o IP do dicionário
+        ip = request_json.get('ip')
+        if ip:
+            # Bloqueia o acesso à lista de IPs enquanto é modificada
+            with ips_lock:
+                if ip in ips:
+                    # Atualiza o IP existente
+                    print(f"Updating IP: {ip}")
+                    response = "HTTP/1.1 200 OK\r\n\r\nIP update successful"
+                else:
+                    response = "HTTP/1.1 404 Not Found\r\n\r\nIP not found"
+        else:
+            response = "HTTP/1.1 400 Bad Request\r\n\r\nMissing or invalid IP"
+    
+    # Verifica se a requisição é do tipo PATCH /patch_ip
+    elif "PATCH /patch_ip" in request_text:
+        # Encontra o tamanho do corpo da requisição
+        content_length_start = request_text.find("Content-Length: ") + len("Content-Length: ")
+        content_length_end = request_text.find("\r\n", content_length_start)
+        content_length = int(request_text[content_length_start:content_length_end])
+    
+        # Extrai o corpo da requisição
+        request_body = request_text.split("\r\n\r\n")[1]
+        # Converte o corpo da requisição JSON em um dicionário
+        request_json = json.loads(request_body)
+    
+        # Obtém o IP do dicionário
+        ip = request_json.get('ip')
+        if ip:
+            # Bloqueia o acesso à lista de IPs enquanto é modificada
+            with ips_lock:
+                if ip in ips:
+                    # Aplica as atualizações parciais no IP existente
+                    print(f"Patching IP: {ip}")
+                    response = "HTTP/1.1 200 OK\r\n\r\nIP patch successful"
+                else:
+                    response = "HTTP/1.1 404 Not Found\r\n\r\nIP not found"
+        else:
+            response = "HTTP/1.1 400 Bad Request\r\n\r\nMissing or invalid IP"
+    
+    # Verifica se a requisição é do tipo DELETE /delete_ip
+    elif "DELETE /delete_ip" in request_text:
+        # Encontra o tamanho do corpo da requisição
+        content_length_start = request_text.find("Content-Length: ") + len("Content-Length: ")
+        content_length_end = request_text.find("\r\n", content_length_start)
+        content_length = int(request_text[content_length_start:content_length_end])
+    
+        # Extrai o corpo da requisição
+        request_body = request_text.split("\r\n\r\n")[1]
+        # Converte o corpo da requisição JSON em um dicionário
+        request_json = json.loads(request_body)
+    
+        # Obtém o IP do dicionário
+        ip = request_json.get('ip')
+        if ip:
+            # Bloqueia o acesso à lista de IPs enquanto é modificada
+            with ips_lock:
+                if ip in ips:
+                    # Remove o IP da lista
+                    ips.remove(ip)
+                    print(f"Deleted IP: {ip}")
+                    response = "HTTP/1.1 200 OK\r\n\r\nIP deletion successful"
+                else:
+                    response = "HTTP/1.1 404 Not Found\r\n\r\nIP not found"
+        else:
+            response = "HTTP/1.1 400 Bad Request\r\n\r\nMissing or invalid IP"
+
 # Função para iniciar o servidor
 def start_server():
     # Cria um socket para o servidor
