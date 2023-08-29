@@ -20,6 +20,39 @@ def send_post_request(ip):
     # Fecha conexão
     client_socket.close()
 
+def send_put_request(ip):
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect(('172.16.103.8', 8080))
+
+    request_body = json.dumps({'ip': ip})
+    request = f"PUT /update_ip HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nContent-Length: {len(request_body)}\r\nContent-Type: application/json\r\n\r\n{request_body}"
+    client_socket.send(request.encode('utf-8'))
+    response = client_socket.recv(1024)
+    print(response.decode('utf-8'))
+    client_socket.close()
+
+def send_patch_request(ip):
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect(('172.16.103.8', 8080))
+
+    request_body = json.dumps({'ip': ip})
+    request = f"PATCH /patch_ip HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nContent-Length: {len(request_body)}\r\nContent-Type: application/json\r\n\r\n{request_body}"
+    client_socket.send(request.encode('utf-8'))
+    response = client_socket.recv(1024)
+    print(response.decode('utf-8'))
+    client_socket.close()
+
+def send_delete_request(ip):
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect(('172.16.103.8', 8080))
+
+    request_body = json.dumps({'ip': ip})
+    request = f"DELETE /delete_ip HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nContent-Length: {len(request_body)}\r\nContent-Type: application/json\r\n\r\n{request_body}"
+    client_socket.send(request.encode('utf-8'))
+    response = client_socket.recv(1024)
+    print(response.decode('utf-8'))
+    client_socket.close()
+
 def send_get_request():
     # Cria um socket para a comunicação com o servidor
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
