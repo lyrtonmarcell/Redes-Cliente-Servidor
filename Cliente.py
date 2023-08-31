@@ -1,11 +1,16 @@
 import socket
 import json
+import uuid
+
+def generate_unique_ip():
+    # Gera um IP único usando um UUID
+    return str(uuid.uuid4())
 
 def send_post_request(ip):
     # Cria um socket para a comunicação com o servidor
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Conecta-se ao endereço IP e porta do servidor
-    client_socket.connect(('172.16.103.8', 8080))
+    client_socket.connect(('127.0.0.1', 8080))
 
     # Prepara o corpo da solicitação POST em formato JSON
     request_body = json.dumps({'ip': ip})
@@ -20,44 +25,11 @@ def send_post_request(ip):
     # Fecha conexão
     client_socket.close()
 
-def send_put_request(ip):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('172.16.103.8', 8080))
-
-    request_body = json.dumps({'ip': ip})
-    request = f"PUT /update_ip HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nContent-Length: {len(request_body)}\r\nContent-Type: application/json\r\n\r\n{request_body}"
-    client_socket.send(request.encode('utf-8'))
-    response = client_socket.recv(1024)
-    print(response.decode('utf-8'))
-    client_socket.close()
-
-def send_patch_request(ip):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('172.16.103.8', 8080))
-
-    request_body = json.dumps({'ip': ip})
-    request = f"PATCH /patch_ip HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nContent-Length: {len(request_body)}\r\nContent-Type: application/json\r\n\r\n{request_body}"
-    client_socket.send(request.encode('utf-8'))
-    response = client_socket.recv(1024)
-    print(response.decode('utf-8'))
-    client_socket.close()
-
-def send_delete_request(ip):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('172.16.103.8', 8080))
-
-    request_body = json.dumps({'ip': ip})
-    request = f"DELETE /delete_ip HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nContent-Length: {len(request_body)}\r\nContent-Type: application/json\r\n\r\n{request_body}"
-    client_socket.send(request.encode('utf-8'))
-    response = client_socket.recv(1024)
-    print(response.decode('utf-8'))
-    client_socket.close()
-
 def send_get_request():
-    # Cria um socket para a comunicação com o servidor
+        # Cria um socket para a comunicação com o servidor
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Conecta-se ao endereço IP e porta do servidor
-    client_socket.connect(('172.16.103.8', 8080))
+    client_socket.connect(('127.0.0.1', 8080))
     # Cria a requisição GET com os cabeçalhos necessários
     request = "GET /get_ips HTTP/1.1\r\nHost: 127.0.0.1:8080\r\n\r\n"
     # Envia a requisição para o servidor
@@ -85,20 +57,34 @@ def send_get_request():
 
     client_socket.close()
 
+def main():
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect(('127.0.0.1', 8080))
+
+    # Gera um IP único e cria a requisição JSON
+    client_ip = generate_unique_ip()
+    client_data = {'client_id': client_ip, 'status': True}
+    client_request = f"POST /add_client HTTP/1.1\r\nContent-Length: {len(json.dumps(client_data))}\r\n\r\n{json.dumps(client_data)}"
+
+    # Envia a requisição para o servidor
+    client_socket.send(client_request.encode('utf-8'))
+    response = client_socket.recv(1024).decode('utf-8')
+    print(response)
+
+    client_socket.close()
+
+
 if __name__ == '__main__':
+    main()
     while True:
-        action = input("Escolha uma das opções (post/put/patch/delete/get/exit): ").lower()
+        action = input("Escolha uma das opções (post/get/exit): ").lower()
         if action == 'exit':
             break
         if action == 'post':
             ip = input("Adicione um IP: ")
             send_post_request(ip)
-        if action == 'put':
-            ip = input("Atualize um IP existente: ")
-            send_put_request(ip)
-        if action == 'patch':
-            ip = input("Aplique um patch em um IP existente: ")
-            send_patch_request(ip)
+        if action == 'get':
+            send_get_request()
         if action == 'delete':
             ip = input("Exclua um IP existente: ")
             send_delete_request(ip)
