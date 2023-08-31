@@ -114,8 +114,3 @@ def start_server():
 # Inicia o servidor quando este arquivo é executado diretamente
 if __name__ == '__main__':
     start_server()
-      
-# Inicia o servidor quando este arquivo é executado diretamente
-if __name__ == '__main__':
-    start_server()
-
