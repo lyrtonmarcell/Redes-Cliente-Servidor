@@ -1,114 +1,132 @@
-import socket
-import threading
+import http.server
+import socketserver
 import json
 
-# Lista para armazenar os IPs
-ips = []
-# Lock para sincronização em acesso concorrente à lista de IPs
-ips_lock = threading.Lock()
-# Dicionário para armazenar as informações dos clientes
-clients_info = {}
-# Lock para sincronização em acesso concorrente ao dicionário de informações dos clientes
-clients_info_lock = threading.Lock()
-def handle_client(client_socket):
-    # Recebe os dados da requisição do cliente
-    request_data = client_socket.recv(1024)
-    # Converte os dados recebidos para texto (string)
-    request_text = request_data.decode('utf-8')
+# Dicionário para armazenar informações das caixas
+caixas = {}
 
+# Dicionário para armazenar as tags
+tags_dict = {}
 
-    # Verifica se a requisição é do tipo GET /get_clients
-    if "GET /get_clients" in request_text:
-    # Bloqueia o acesso ao dicionário de informações dos clientes enquanto é lido
-        with clients_info_lock:
-            # Converte o dicionário de informações dos clientes em JSON e codifica em bytes
-            response_data =json.dumps(clients_info).encode('utf-8')
-            # Monta a resposta com o cabeçalho apropriado
-            response = "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}".format(len(response_data), response_data.decode('utf-8'))
-
-# Verifica se a requisição é do tipo POST /add_client
-    if "POST /add_client" in request_text:
-        # Encontra o tamanho do corpo da requisição
-        content_length_start = request_text.find("Content-Length: ") + len("Content-Length: ")
-        content_length_end = request_text.find("\r\n", content_length_start)
-        content_length = int(request_text[content_length_start:content_length_end])
-
-        # Extrai o corpo da requisição
-        request_body = request_text.split("\r\n\r\n")[1]
-        # Converte o corpo da requisição JSON em um dicionário
-        request_json = json.loads(request_body)
-
-        # Obtém o IP do cliente
-        client_ip = client_socket.getpeername()[0]
-
-        # Obtém informações do cliente do dicionário
-        client_status = request_json.get('status')
-
-        if client_status is not None:
-            # Bloqueia o acesso ao dicionário de informações dos clientes enquanto é modificado
-            with clients_info_lock:
-                # Adiciona informações do cliente ao dicionário
-                clients_info[client_ip] = {'status': client_status}
-                print(f"Added client: {client_ip} with status: {client_status}")
-                response = "HTTP/1.1 200 OK\r\n\r\nClient addition successful"
+class RequestHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/caixas':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(caixas).encode())
+        elif self.path == '/tags':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(tags_dict).encode())
         else:
-            response = "HTTP/1.1 400 Bad Request\r\n\r\nMissing or invalid client information"
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b'404 Not Found')
 
-
-    # Verifica se a requisição é do tipo GET /get_ips
-    if "GET /get_ips" in request_text:
-        # Bloqueia o acesso à lista de IPs enquanto é lida
-        with ips_lock:
-            # Converte a lista de IPs em um JSON e codifica em bytes
-            response_data =json.dumps({'ips': ips}).encode('utf-8')
-            # Monta a resposta com o cabeçalho apropriado
-            response = "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}".format(len(response_data), response_data.decode('utf-8'))
-    # Verifica se a requisição é do tipo POST /add_ip
-    if "POST /add_ip" in request_text:
-        # Encontra o tamanho do corpo da requisição
-        content_length_start = request_text.find("Content-Length: ") + len("Content-Length: ")
-        content_length_end = request_text.find("\r\n", content_length_start)
-        content_length = int(request_text[content_length_start:content_length_end])
-
-        # Extrai o corpo da requisição
-        request_body = request_text.split("\r\n\r\n")[1]
-        # Converte o corpo da requisição JSON em um dicionário
-        request_json = json.loads(request_body)
-
-        # Obtém o IP do dicionário
-        ip = request_json.get('ip')
-        if ip:
-            # Bloqueia o acesso à lista de IPs enquanto é modificada
-            with ips_lock:
-                ips.append(ip)
-                print(f"Received IP: {ip}")
-                response = "HTTP/1.1 200 OK\r\n\r\nIP addition successful"
+    def do_PUT(self):
+        if self.path.startswith('/caixas/'):
+            caixa = self.path.split('/')[-1]
+            content_length = int(self.headers.get('Content-Length', 0))
+            if content_length > 0:
+                payload = self.rfile.read(content_length)
+                data = json.loads(payload.decode())
+                if 'status' in data:
+                    # Atualizar o status da caixa se ela existir
+                    if caixa in caixas:
+                        caixas[caixa]['status'] = data['status']
+                        self.send_response(200)
+                        self.end_headers()
+                        self.wfile.write(json.dumps({'message': 'Status da caixa atualizado com sucesso.'}).encode())
+                    else:
+                        self.send_response(404)
+                        self.end_headers()
+                        self.wfile.write(json.dumps({'error': f'Caixa "{caixa}" não encontrada.'}).encode())
+                else:
+                    self.send_response(400)
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'error': 'Solicitação PUT inválida.'}).encode())
+            else:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': 'Solicitação PUT inválida. Sem corpo de mensagem.'}).encode())
         else:
-            response = "HTTP/1.1 400 Bad Request\r\n\r\nMissing or invalid IP"
-    else:
-        response = "HTTP/1.1 404 Not Found\r\n\r\n"
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b'404 Not Found')
 
-    # Envia a resposta para o cliente
-    client_socket.send(response.encode('utf-8'))
-    client_socket.close()
-# Função para iniciar o servidor
-def start_server():
-    # Cria um socket para o servidor
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # Liga o socket ao endereço IP e porta
-    server_socket.bind(('127.0.0.1', 8080))
-    # Inicia a escuta por conexões
-    server_socket.listen(10)
-    # Exibe uma mensagem de que o servidor está ouvindo
-    print("Servidor ouvindo na porta 8080")
+    def do_POST(self):
+        if self.path == '/registrar':
+            content_length = int(self.headers.get('Content-Length', 0))
+            if content_length > 0:
+                payload = self.rfile.read(content_length)
+                data = json.loads(payload.decode())
+                if 'nome' in data and 'endereco' in data and 'status' in data:
+                    nome = data['nome']
+                    endereco = data['endereco']
+                    status = data['status']
+                    # Adicionar a nova entrada ao dicionário de caixas
+                    caixas[nome] = {'endereco': endereco, 'status': status}
+                    self.send_response(200)
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'message': 'Caixa registrada com sucesso.'}).encode())
+                else:
+                    self.send_response(400)
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'error': 'Solicitação POST inválida.'}).encode())
+            else:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': 'Solicitação POST inválida. Sem corpo de mensagem.'}).encode())
+        elif self.path == '/armazenar_tags':
+            content_length = int(self.headers.get('Content-Length', 0))
+            if content_length > 0:
+                payload = self.rfile.read(content_length)
+                data = json.loads(payload.decode())
+                if 'nome_caixa' in data and 'tags' in data:
+                    nome_caixa = data['nome_caixa']
+                    tags = data['tags']
+                    # Verificar o status da caixa
+                    if nome_caixa in caixas:
+                        if caixas[nome_caixa]['status'] == 'bloqueado':
+                            self.send_response(400)
+                            self.end_headers()
+                            self.wfile.write(json.dumps({'error': f'A caixa "{nome_caixa}" está bloqueada.'}).encode())
+                            return
+                        # Adicionar as tags ao dicionário de tags usando o nome_caixa como chave
+                        tags_dict[nome_caixa] = tags
+                        self.send_response(200)
+                        self.end_headers()
+                        self.wfile.write(json.dumps({'message': f'Tags armazenadas com sucesso para a caixa "{nome_caixa}".'}).encode())
+                    else:
+                        self.send_response(404)
+                        self.end_headers()
+                        self.wfile.write(json.dumps({'error': f'Caixa "{nome_caixa}" não encontrada.'}).encode())
+                else:
+                    self.send_response(400)
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'error': 'Solicitação POST inválida. Deve incluir "nome_caixa" e "tags".'}).encode())
+            else:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': 'Solicitação POST inválida. Sem corpo de mensagem.'}).encode())
+        else:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b'404 Not Found')
 
-    # Loop para aceitar e lidar com as conexões dos clientes
-    while True:
-        # Aceita uma conexão e obtém o socket do cliente e o endereço
-        client_socket, addr = server_socket.accept()
-        # Cria uma thread para lidar com o cliente
-        client_thread = threading.Thread(target=handle_client, args=(client_socket,))
-        # Inicia a thread
+def main():
+    port = 3000
+    with socketserver.TCPServer(('127.0.0.1', port), RequestHandler) as httpd:
+        print(f'Servidor escutando na porta {port}...')
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            pass
+
+if __name__ == '__main__':
+    main()
         client_thread.start()
 
 # Inicia o servidor quando este arquivo é executado diretamente
