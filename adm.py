@@ -27,7 +27,8 @@ def main():
         print("1. Ver informações das caixas (GET)")
         print("2. Modificar informações de uma caixa (PUT)")
         print("3. Ver informações dos históricos de compras (GET)")
-        print("4. Sair")
+        print("4. Ver estoque (GET)")
+        print("5. Sair")
         choice = input("Opção: ")
 
         if choice == "1":
@@ -56,6 +57,14 @@ def main():
             else:
                 print("Falha ao obter informações de tags.")
         elif choice == "4":
+            status, response = send_get_request(host, "/estoque")
+            if status == 200:
+                estoque = json.loads(response)
+                formatted_estoque = json.dumps(estoque, indent=2)
+                print(formatted_estoque)
+            else:
+                print("Falha ao obter informações de estoque.")
+        elif choice == "5":
             break
         else:
             print("Opção inválida.")
