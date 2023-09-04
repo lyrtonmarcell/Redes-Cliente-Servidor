@@ -8,6 +8,55 @@ caixas = {}
 # Dicionário para armazenar as tags
 tags_dict = {}
 
+# Dicionário para armazenar o estoque
+estoque = {
+    'E20000172211009418905449': {
+        'nome': 'Feijão',
+        'preco': 5.0,
+        'quantidade': 10
+    },
+    'E2000017221101321890548C': {
+        'nome': 'Arroz',
+        'preco': 4.0,
+        'quantidade': 15
+    },
+    'E2000017221101241890547C': {
+        'nome': 'Macarrão',
+        'preco': 3.0,
+        'quantidade': 20
+    },
+    'E20000172211010218905459': {
+        'nome': 'Açúcar',
+        'preco': 2.5,
+        'quantidade': 12
+    },
+    'E20000172211011118905471': {
+        'nome': 'Café',
+        'preco': 6.0,
+        'quantidade': 8
+    },
+    'E20000172211012518905484': {
+        'nome': 'Leite',
+        'preco': 3.5,
+        'quantidade': 18
+    },
+    'E2000017221100961890544A': {
+        'nome': 'Óleo',
+        'preco': 4.5,
+        'quantidade': 14
+    },
+    'E20000172211011718905474': {
+        'nome': 'Sal',
+        'preco': 1.0,
+        'quantidade': 25
+    },
+    'E20000172211010118905454': {
+        'nome': 'Farinha',
+        'preco': 2.0,
+        'quantidade': 22
+    },
+}
+
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/caixas':
@@ -20,6 +69,11 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps(tags_dict).encode())
+        elif self.path == '/estoque':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(estoque).encode())
         else:
             self.send_response(404)
             self.end_headers()
@@ -96,6 +150,12 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
                             return
                         # Adicionar as tags ao dicionário de tags usando o nome_caixa como chave
                         tags_dict[nome_caixa] = tags
+                        
+                        # Descontar as tags do estoque
+                        for tag in tags:
+                            if tag in estoque:
+                                estoque[tag]['quantidade'] -= 1
+                        
                         self.send_response(200)
                         self.end_headers()
                         self.wfile.write(json.dumps({'message': f'Tags armazenadas com sucesso para a caixa "{nome_caixa}".'}).encode())
@@ -127,8 +187,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-        client_thread.start()
-
-# Inicia o servidor quando este arquivo é executado diretamente
-if __name__ == '__main__':
-    start_server()
