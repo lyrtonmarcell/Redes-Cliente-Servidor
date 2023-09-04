@@ -2,7 +2,7 @@ import http.client
 import json
 import socket
 import random
-
+tags = []
 def send_post_request(host, path, payload):
     headers = {"Content-Type": "application/json"}
     payload_json = json.dumps(payload)
@@ -36,6 +36,7 @@ def get_stock_from_server(host, path):
     return json.loads(data)
 
 def main():
+    global tags  # Declara tags como uma variável global
     host = "127.0.0.1:3000"  # Endereço do servidor RESTful
     unique_ip = generate_unique_ip()
     caixa_name = f"caixa{unique_ip.replace('.', '')}"
@@ -49,22 +50,22 @@ def main():
         print(f"Falha ao enviar os dados para o servidor. Status: {status}, Resposta: {response}")
 
     while True:
-        user_input = input("Pressione 'S' para enviar tags ou 'Q' para sair: ").strip().lower()
+        user_input = input("Pressione 'S' para enviar tags, 'G' para receber itens ou 'Q' para sair: ").strip().lower()
         
         if user_input == 's':
-            tags = [
-                'E20000172211009418905449',
-                'E20000172211009418905449',
-                'E2000017221101321890548C',
-                'E2000017221101321890548C',
-                'E2000017221101241890547C',
-                'E20000172211010218905459',
-                'E20000172211011118905471',
-                'E20000172211012518905484',
-                'E2000017221100961890544A',
-                'E20000172211011718905474',
-                'E20000172211010118905454'
-            ]
+            #tags = [
+                #'E20000172211009418905449',
+                #'E20000172211009418905449',
+                #'E2000017221101321890548C',
+                #'E2000017221101321890548C',
+                #'E2000017221101241890547C',
+                #'E20000172211010218905459',
+                #'E20000172211011118905471',
+                #'E20000172211012518905484',
+                #'E2000017221100961890544A',
+                #'E20000172211011718905474',
+                #'E20000172211010118905454'
+            #]
             send_tags_to_server(host, "/armazenar_tags", caixa_name, tags)
             stock = get_stock_from_server(host, "/estoque")
             print("Produtos armazenados:")
@@ -87,10 +88,21 @@ def main():
                 total_price += product_info['preco'] * product_info['quantidade']
 
             print(f"Preço Total: {total_price}")
+        
+        if user_input == 'g':
+        # Recebe itens do servidor
+            host2="127.0.0.1:4000"
+            received_items = get_stock_from_server(host2, "/itens")
+            if 'itens' in received_items:
+                tags.extend(received_items['itens'])
+                print(f"Itens recebidos: {received_items['itens']}")
+            else:
+                print("Nenhum item recebido.")
+
         elif user_input == 'q':
             break
         else:
-            print("Comando inválido. Pressione 'S' para enviar tags ou 'Q' para sair.")
+            print("Comando inválido. Pressione 'S' para enviar tags, 'G' para receber itens ou 'Q' para sair.")
 
 if __name__ == "__main__":
     main()
