@@ -1,7 +1,7 @@
 import http.server
 import socketserver
 import json
-
+import threading
 # Dicionário para armazenar informações das caixas
 caixas = {}
 
@@ -182,7 +182,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 def main():
     port = 3000
-    with socketserver.TCPServer(('127.0.0.1', port), RequestHandler) as httpd:
+    with socketserver.(('127.0.0.1', port), RequestHandler) as httpd:
         print(f'Servidor escutando na porta {port}...')
         try:
             httpd.serve_forever()
