@@ -9,3 +9,5 @@ WORKDIR /app/
 
 # Comando padrão para executar scripts
 CMD ["python", "caixa.py"]
+
+#docker run -d nome_da_imagem
