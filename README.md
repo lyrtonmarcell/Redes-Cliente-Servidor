@@ -52,3 +52,34 @@ Uma etiqueta RFID é um dispositivo, ativo ou passivo, que contém dados salvos 
 Para executar o script que vai realizar a leitura e envio das tags utiliza-se a Raspberry PI, que é uma série de computadores de placa única desenvolvida pela Raspberry Pi Foundation, uma organização sem fins lucrativos com sede no Reino Unido, que projetão esses dispositivos para serem computadores de baixo custo, pequenos, versáteis e acessíveis para fins educacionais e projetos.
 
 # Resultados e Discussãos
+O sistema de supermercado inteligente baseado em API REST demonstrou ser uma solução eficaz e robusta para a gestão de supermercados, oferecendo uma experiência aprimorada tanto para os clientes quanto para os administradores. Os resultados obtidos após a implementação e operação deste sistema têm sido extremamente satisfatórios e promissores.
+
+1. Agilidade nas Transações e Pagamentos
+
+Uma das principais vantagens observadas foi a agilidade nas transações e pagamentos. A utilização de um servidor centralizado e a capacidade de comunicação de dados em tempo real através do protocolo API REST permitiram que as compras fossem processadas de forma eficiente. Os clientes podem selecionar produtos e finalizar suas compras de maneira rápida e conveniente, reduzindo significativamente o tempo gasto nas filas do caixa.
+
+2. Controle de Estoque Preciso
+
+O sistema de supermercado inteligente proporcionou um controle de estoque extremamente preciso. A leitura das tags dos produtos e a atualização em tempo real no servidor permitiram que os administradores monitorassem os níveis de estoque de forma precisa. Isso resultou em menos produtos fora de estoque e, ao mesmo tempo, evitou o excesso de produtos em prateleiras, economizando recursos financeiros.
+
+3. Facilidade na Integração de Dados e Funcionalidades
+
+A estrutura baseada em API REST tornou a integração de novos recursos e serviços uma tarefa relativamente simples. A capacidade de conectar o sistema a outros aplicativos e serviços é um dos principais benefícios dessa abordagem. Os administradores podem, por exemplo, integrar sistemas de gerenciamento de fornecedores, sistemas de pagamento online e até mesmo programas de fidelidade de clientes sem grandes dificuldades.
+
+4. Monitoramento em Tempo Real
+
+A capacidade de monitoramento em tempo real é uma das características mais valiosas do sistema. Os administradores podem acompanhar o fluxo de clientes, a movimentação de produtos e até mesmo o desempenho dos caixas em tempo real. Isso permite tomar decisões informadas e ajustar rapidamente a operação do supermercado conforme necessário.
+
+5. Eficiência na Gestão de Caixa
+
+Os caixas também se beneficiaram com a implementação deste sistema. Eles podem processar as compras com mais rapidez e precisão, uma vez que o sistema fornece informações detalhadas sobre os produtos e seus preços. Além disso, o sistema de pagamento foi integrado de maneira eficaz, aceitando diversas formas de pagamento, como dinheiro, cartões e até mesmo sistemas de pagamento digital, como PIX.
+
+6. Escalabilidade e Flexibilidade
+
+O sistema foi projetado para ser escalável e flexível, o que significa que pode ser adaptado para atender às necessidades de diferentes tamanhos de supermercados e cadeias de lojas. À medida que o negócio cresce, o sistema pode ser expandido facilmente para acomodar novos pontos de venda e produtos.
+
+# Conclusão
+
+O sistema de supermercado inteligente baseado em API REST é um exemplo notável de como a tecnologia pode melhorar a eficiência, a precisão e a experiência geral de compras para clientes e administradores. Os resultados até o momento demonstram que essa abordagem oferece benefícios significativos e que a sua implementação tem sido um sucesso, claro que melhorias podem ser feitas, principalmente no tratamento de erros.
+
+À medida que a tecnologia continua a avançar, é provável que esse sistema se torne ainda mais sofisticado e eficiente. Ele exemplifica como a integração de tecnologias modernas e a adoção de protocolos de comunicação robustos podem transformar a forma como os supermercados operam e interagem com os clientes, tornando a experiência de compras mais conveniente e eficaz.
