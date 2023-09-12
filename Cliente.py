@@ -2,7 +2,9 @@ import http.client
 import json
 import socket
 import random
+selected_items = []
 tags = []
+#envia o nome, ip e status do caixa
 def send_post_request(host, path, payload):
     headers = {"Content-Type": "application/json"}
     payload_json = json.dumps(payload)
@@ -12,7 +14,7 @@ def send_post_request(host, path, payload):
     data = response.read().decode()
     conn.close()
     return response.status, data
-
+#envia as tags lidas
 def send_tags_to_server(host, path, nome_caixa, tags):
     payload = {"nome_caixa": nome_caixa, "tags": tags}
     status, response = send_post_request(host, path, payload)
@@ -21,12 +23,12 @@ def send_tags_to_server(host, path, nome_caixa, tags):
     else:
         print(f"Falha ao enviar as tags para o servidor para o caixa '{nome_caixa}'. Status: {status}, Resposta: {response}")
 
-
+#gera ips unicos
 def generate_unique_ip():
     # Gerar um IP aleatório dentro da faixa 192.168.1.x
     ip = f"192.168.1.{random.randint(1, 255)}"
     return ip
-
+#exibe o estoque
 def get_stock_from_server(host, path):
     conn = http.client.HTTPConnection(host)
     conn.request("GET", path)
@@ -50,7 +52,7 @@ def main():
         print(f"Falha ao enviar os dados para o servidor. Status: {status}, Resposta: {response}")
 
     while True:
-        user_input = input("Pressione 'S' para enviar tags, 'G' para receber itens ou 'Q' para sair: ").strip().lower()
+        user_input = input("Bem-vindo! Pressione 'S' para verificar os produtos, 'G' para ler as tags dos itens, 'F' para finalizar a compra, 'C' para cancelar a compra ou 'Q' para sair: ").strip().lower()
         
         if user_input == 's':
             #tags = [
@@ -66,9 +68,9 @@ def main():
                 #'E20000172211011718905474',
                 #'E20000172211010118905454'
             #]
-            send_tags_to_server(host, "/armazenar_tags", caixa_name, tags)
+            
             stock = get_stock_from_server(host, "/estoque")
-            print("Produtos armazenados:")
+            print("Produtos Registrados:")
             
             # Contagem de produtos com base no número de tags iguais
             product_count = {}
@@ -99,10 +101,24 @@ def main():
             else:
                 print("Nenhum item recebido.")
 
+        elif user_input == 'f':
+                #finaliza a compra
+                payment_method = input("Escolha a forma de pagamento (e.g., dinheiro, cartão): ")
+                print(f"Compra finalizada. Forma de pagamento: {payment_method}")
+                print(f"Obrigado pela preferencia! volte sempre!")
+                send_tags_to_server(host, "/armazenar_tags", caixa_name, tags)
+                tags.clear()  # Limpa a lista de itens selecionados
+
+        elif user_input == 'c':
+            # Cancelar a compra
+            if selected_items:
+                selected_items.clear()
+                print("Compra cancelada. Itens selecionados foram removidos.")
+            else:
+                print("Nenhum item selecionado para compra.")
+
         elif user_input == 'q':
             break
-        else:
-            print("Comando inválido. Pressione 'S' para enviar tags, 'G' para receber itens ou 'Q' para sair.")
 
 if __name__ == "__main__":
     main()
