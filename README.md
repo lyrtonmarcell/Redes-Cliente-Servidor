@@ -68,7 +68,7 @@ O sistema de supermercado inteligente baseado em API REST é um exemplo notável
 
 # Referências
 
-TANENBAUM, Andrew S. Redes de Computadores. Pearson, 2014.
-<https://docs.python.org/pt-br/3.6/library/>. Acessado: 08/09/2023.
-<https://embarcados.com.br/rfid-raspberry-pi-python/>. Acessado: 08/09/2023.
-<https://www.gta.ufrj.br/ensino/eel878/redes1-2016-1/16_1/p2p/modelo.html#:~:text=A%20arquitetura%20cliente%20servidor%20%C3%A9,recursos%20ou%20servi%C3%A7os%2C%20denominados%20clientes.>. Acessado: 08/09/2023
+- TANENBAUM, Andrew S. Redes de Computadores. Pearson, 2014.
+- <https://docs.python.org/pt-br/3.6/library/>. Acessado: 08/09/2023.
+- <https://embarcados.com.br/rfid-raspberry-pi-python/>. Acessado: 08/09/2023.
+- <https://www.gta.ufrj.br/ensino/eel878/redes1-2016-1/16_1/p2p/modelo.html#:~:text=A%20arquitetura%20cliente%20servidor%20%C3%A9,recursos%20ou%20servi%C3%A7os%2C%20denominados%20clientes.>. Acessado: 08/09/2023
