@@ -1,0 +1,11 @@
+#imagem Python oficial como base
+FROM python:3.8
+
+# Script python
+COPY caixa.py /app/
+
+#diretório de trabalho no contêiner
+WORKDIR /app/
+
+# Comando padrão para executar scripts
+CMD ["python", "caixa.py"]
