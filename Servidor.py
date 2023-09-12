@@ -182,7 +182,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 def main():
     port = 3000
-    with socketserver.(('127.0.0.1', port), RequestHandler) as httpd:
+    with socketserver.ThreadingTCPServer(('127.0.0.1', port), RequestHandler) as httpd:
         print(f'Servidor escutando na porta {port}...')
         try:
             httpd.serve_forever()
