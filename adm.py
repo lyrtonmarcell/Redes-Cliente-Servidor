@@ -1,6 +1,7 @@
 import http.client
 import json
 
+#exibe informações do caixa, como nome, ip, status
 def send_get_request(host, path):
     conn = http.client.HTTPConnection(host)
     conn.request("GET", path)
@@ -9,6 +10,7 @@ def send_get_request(host, path):
     conn.close()
     return response.status, data
 
+#edita o status do caixa
 def send_put_request(host, path, payload):
     headers = {"Content-Type": "application/json"}
     payload_json = json.dumps(payload)
@@ -20,8 +22,8 @@ def send_put_request(host, path, payload):
     return response.status, data
 
 def main():
-    host = "127.0.0.1:3000"  # Endereço do servidor RESTful
-
+    host = "127.0.0.1:3000"  # Endereço do servidor REST
+    #menu do administrador
     while True:
         print("Escolha uma opção:")
         print("1. Ver informações das caixas (GET)")
