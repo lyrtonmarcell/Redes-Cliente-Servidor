@@ -5,7 +5,7 @@ import socketserver
 import json
 import mercury
 from datetime import datetime
-
+import threading
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/itens':
