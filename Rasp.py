@@ -45,7 +45,7 @@ def read_tags():
 
 def main():
     port = 4000
-    with socketserver.TCPServer(('127.0.0.1', port), RequestHandler) as httpd:
+    with socketserver.ThreadingTCPServer(('127.0.0.1', port), RequestHandler) as httpd:
         print(f'Servidor escutando na porta {port}...')
         try:
             httpd.serve_forever()
