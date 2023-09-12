@@ -15,4 +15,4 @@ EXPOSE 3000
 CMD ["python", "server.py"]
 
 #docker build -t nome_da_imagem .
-#docker run -d -p 80:3000 nome_da_imagem
+#docker run -d -p 3000:3000 nome_da_imagem
