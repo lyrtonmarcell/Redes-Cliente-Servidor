@@ -42,10 +42,13 @@ A plataforma Docker foi criada para simplificar o processo de construção, lan�
 Um contêiner é uma unidade independente e leve que envolve um aplicativo e todas as suas dependências. Inclui bibliotecas, configurações e códigos necessários para o funcionamento do aplicativo. Os contêineres desempenham um papel importante para garantir que um aplicativo receba um ambiente uniforme, independentemente do ambiente em que é implantado.
 Uma imagem Docker é um modelo que define como um contêiner deve ser construído. As imagens são criadas a partir de arquivos chamados Dockerfiles, que especificam as instruções para criar um ambiente específico.Um Dockerfile é um arquivo de configuração que descreve as etapas necessárias para construir uma imagem Docker.
 
-# 2.5 RFID
+# 2.5 RFID e Raspberry PI
 
 Um dispositivo eletrônico, denominado leitor RFID (Identificação por Radiofrequência), tem a finalidade de extrair informações de etiquetas ou etiquetas RFID. Essas etiquetas são minúsculas e possuem um microchip e uma antena. Eles são implantados para transmitir e armazenar dados sem cabos ou fios por meio de sinais de radiofrequência.
 
 A tecnologia RFID é uma ferramenta altamente prevalente utilizada em inúmeras aplicações, desde monitoramento e gerenciamento de estoque de produtos até controle de pontos de entrada e saída, bem como identificação de animais domésticos.
 Uma etiqueta RFID é um dispositivo, ativo ou passivo, que contém dados salvos digitalmente. As tags passivas não possuem fonte interna de energia e são acionadas quando entram em contato com um campo de radiofrequência emitido pelo leitor RFID, porém as tags ativas, possuem uma fonte de energia interna e têm a capacidade de transmitir informações de forma mais independente. Para realizar a leitura dessas tags utiliza-se o leitor RFID, que é uma ferramenta responsável por emitir um sinal de frequência que aciona as etiquetas RFID e recupera os dados que elas contêm.
 
+Para executar o script que vai realizar a leitura e envio das tags utiliza-se a Raspberry PI, que é uma série de computadores de placa única desenvolvida pela Raspberry Pi Foundation, uma organização sem fins lucrativos com sede no Reino Unido, que projetão esses dispositivos para serem computadores de baixo custo, pequenos, versáteis e acessíveis para fins educacionais e projetos.
+
+# Resultados e Discussãos
