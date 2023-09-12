@@ -58,6 +58,7 @@ estoque = {
 }
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
+    #exibe caixas, tags e estoque
     def do_GET(self):
         if self.path == '/caixas':
             self.send_response(200)
@@ -80,6 +81,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(b'404 Not Found')
 
     def do_PUT(self):
+        #modifica o status do caixa
         if self.path.startswith('/caixas/'):
             caixa = self.path.split('/')[-1]
             content_length = int(self.headers.get('Content-Length', 0))
@@ -111,6 +113,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(b'404 Not Found')
 
     def do_POST(self):
+        #registra o caixa
         if self.path == '/registrar':
             content_length = int(self.headers.get('Content-Length', 0))
             if content_length > 0:
@@ -133,6 +136,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_response(400)
                 self.end_headers()
                 self.wfile.write(json.dumps({'error': 'Solicitação POST inválida. Sem corpo de mensagem.'}).encode())
+                
         elif self.path == '/armazenar_tags':
             content_length = int(self.headers.get('Content-Length', 0))
             if content_length > 0:
@@ -143,22 +147,22 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
                     tags = data['tags']
                     # Verificar o status da caixa
                     if nome_caixa in caixas:
+                        if caixas[nome_caixa]['status'] == 'aberto':
+                        # Adicionar as tags ao dicionário de tags usando o nome_caixa como chave
+                            tags_dict[nome_caixa] = tags
+                            
+                            # Descontar as tags do estoque
+                            for tag in tags:
+                                if tag in estoque:
+                                    estoque[tag]['quantidade'] -= 1
+                            
+                            self.send_response(200)
+                            self.end_headers()
+                            self.wfile.write(json.dumps({'message': f'Tags armazenadas com sucesso para a caixa "{nome_caixa}".'}).encode())
                         if caixas[nome_caixa]['status'] == 'bloqueado':
                             self.send_response(400)
                             self.end_headers()
                             self.wfile.write(json.dumps({'error': f'A caixa "{nome_caixa}" está bloqueada.'}).encode())
-                            return
-                        # Adicionar as tags ao dicionário de tags usando o nome_caixa como chave
-                        tags_dict[nome_caixa] = tags
-                        
-                        # Descontar as tags do estoque
-                        for tag in tags:
-                            if tag in estoque:
-                                estoque[tag]['quantidade'] -= 1
-                        
-                        self.send_response(200)
-                        self.end_headers()
-                        self.wfile.write(json.dumps({'message': f'Tags armazenadas com sucesso para a caixa "{nome_caixa}".'}).encode())
                     else:
                         self.send_response(404)
                         self.end_headers()
